@@ -1,126 +1,94 @@
 package main;
+ 
+import java.security.spec.RSAOtherPrimeInfo;
 import java.util.Scanner;
+ 
 public class Main {
     static Scanner sc = new Scanner(System.in);
-    static void nhapTK(Account tk) {
-        System.out.print("Nhap so tai khoan : ");
-        tk.setSoTK(sc.nextInt());
+    static void nhapAlbum(Album ab) {
+        System.out.print("Nhap ma CD: ");
+        ab.setMaCD(sc.nextInt());
         sc.nextLine();
-        System.out.print("Nhap ten tai khoan : ");
-        tk.setTenTK(sc.nextLine());
-        tk.setSoTienTrongTK(50);
+        System.out.print("Nhap ten CD : ");
+        ab.setTenCD(sc.nextLine());
+        System.out.print("Nhap so luong bai hat : ");
+        ab.setSoBH(sc.nextInt());
+        System.out.print("Nhap gia thanh : ");
+        ab.setGiaThanh(sc.nextFloat());
     }
     public static void main(String[] args) {
-        Account a[] = null;
-        int k, b, n = 0;
-        long s, d, c, f;
+        Album alb[] = null;
+        int a, n = 0;
         boolean flag = true;
         do {
-            System.out.println("-------Vui long chon chuc nang-------- ");
-            System.out.println("1.Them tai khoan.\n"
-                    + "2.In thong tin.\n"
-            		+ "3.Nap tien.\n" 
-                    + "4.Rut tien.\n"
-                    + "5.Chuyen khoan.\n" 
-                    + "6.Dao han.\n"
-                    + "0.Thoat chuong trinh.");
-            b = sc.nextInt();
-            switch (b) {
+            System.out.println("Vui long chon chuc nang ");
+            System.out.println("1.Them CD \n" +
+                    "2.Xuat danh sach Album.\n" + 
+            		"3.Tinh tong gia thanh \n" + 
+                    "4.Tong so luong CD \n" +
+                    "5.Sap xep giam dan theo gia thanh\n"+
+                    "6.Sap xep giam dan theo ten CD\n"+
+                    "0.Thoat chuong trinh");
+            a = sc.nextInt();
+            switch (a) {
                 case 1:
-                    System.out.print("So luong khach muon nhap : ");
+                    System.out.print("Nhap so luong CD : ");
                     n = sc.nextInt();
-                    a = new Account[n];
+                    alb = new Album[n];
                     for (int i = 0; i < n; i++) {
-                        System.out.println("Khach hang so : " + (i+1));
-                        a[i] = new Account();
-                        nhapTK(a[i]);
+                        System.out.println("CD thu " + (i + 1)+": ");
+                        alb[i] = new Album();
+                        nhapAlbum(alb[i]);
                     }
                     break;
                 case 2:
-                    System.out.printf("%-10s %-20s %-20s\n", "So TK", "Ten TK", "So tien trong TK");
+                    System.out.printf("%-10s %-20s %-10s %-20s \n", "Ma CD", "Ten CD", "So bai hat", "Gia thanh");
                     for (int i = 0; i < n; i++) {
-                        a[i].inTK();
+                        alb[i].hienThiAlbum();
                     }
                     break;
                 case 3:
-                    System.out.print("So tai khoan khach hang can nap tien : ");
-                    s = sc.nextLong();
+                    int tong = 0;
                     for (int i = 0; i < n; i++) {
-                        d = a[i].getSoTK();
-                        if (s == d) {
-                            System.out.println("Ban chon tai khoan : " + d);
-                            a[i].napTien();
-                        } else {
-                            System.out.println("");
-                        }
+                        tong += alb[i].getGiaThanh();
                     }
+                    System.out.println("" +
+                            "Tong gia thanh : " + tong);
                     break;
                 case 4:
-                    System.out.print("So tai khoan khach hang muon rut tien : ");
-                    s = sc.nextLong();
-                    for (int i = 0; i < n; i++) {
-                        d = a[i].getSoTK();
-                        if (s == d) {
-                            System.out.println("Ban chon tai khoan : " + d);
-                            a[i].rutTien();
-                        }
-                    }
+                    System.out.println("Tong so luong CD la : " + n);
                     break;
-                
                 case 5:
-                    double chuyen,
-                            nhan,
-                            tienChuyen;
-                    System.out.print("So tai khoan nguoi chuyen tien : ");
-                    s = sc.nextLong();
-                    System.out.print("So tai khoan nguoi nhan tien : ");
-                    c = sc.nextLong();
-                    for (int i = 0; i < n; i++) {
-                        d = a[i].getSoTK();
-                        if (s == d) {
-                            chuyen = a[i].getSoTienTrongTK();
-                            for (int j = 0; j < n; j++) {
-                                f = a[j].getSoTK();
-                                if (c == f) {
-                                    nhan = a[j].getSoTienTrongTK();
-                                    System.out.print("Nhap so tien can chuyen : ");
-                                    tienChuyen = sc.nextDouble();
-                                    if (tienChuyen <= chuyen) {
-                                        chuyen = chuyen - tienChuyen;
-                                        nhan = nhan + tienChuyen;
-                                        a[i].setSoTienTrongTK(chuyen);
-                                        a[j].setSoTienTrongTK(nhan);
-                                        System.out.println("Tai khoan so " + d + " vua chuyen: $" + tienChuyen);
-                                        System.out.println("Tai khoan so  " + f + " vua nhan: $" + tienChuyen);
-                                    } else {
-                                        System.out.println("So tien nhap khong hop le!!!");
-                                    }
-                                } else {
-                                    System.out.println("");
-                                }
+                    Album temp = alb[0];
+                    for (int i = 0; i < n - 1; i++) {
+                        for (int j = i + 1; j < n; j++) {
+                            if (alb[i].getGiaThanh() < alb[j].getGiaThanh()) {
+                                temp = alb[j];
+                                alb[j] = alb[i];
+                                alb[i] = temp;
                             }
-                        } else {
-                            System.out.println("");
                         }
                     }
+                    System.out.println("Sap xep thanh cong!");
                     break;
                 case 6:
-                    System.out.print("So tai khoan khach hang can dao han : ");
-                    s = sc.nextLong();
-                    for (int i = 0; i < n; i++) {
-                        d = a[i].getSoTK();
-                        if (s == d) {
-                            System.out.println("Ban chon tai khoan : " + d);
-                            a[i].daoHan();
-                        } else {
-                            System.out.println("");
+                    temp = alb[0];
+                    for (int i = 0; i < n - 1; i++) {
+                        for (int j = i + 1; j < n; j++) {
+                            if (alb[i].getTenCD().compareTo(alb[j].getTenCD())>0) {
+                                temp = alb[j];
+                                alb[j] = alb[i];
+                                alb[i] = temp;
+                            }
                         }
                     }
+                    System.out.println("Sap xep thanh cong!");
                     break;
                 default:
+                 
                     flag = false;
                     break;
             }
-        } while (flag);
+        }while (flag) ;
     }
 }
